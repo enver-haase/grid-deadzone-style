@@ -1,3 +1,10 @@
+/* Fix: draw a header/body separator — Lumo/Aura provide this via theme CSS,
+   but with no theme loaded it is absent. Use slightly stronger contrast (20%)
+   than body row borders (10%) so the header stands out visually. */
+vaadin-grid::part(header-row) {
+    border-bottom: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+}
+
 /* Fix: extend horizontal row borders into the dead zone after the last column */
 vaadin-grid::part(body-row) {
     border-bottom: 1px solid color-mix(in srgb, currentColor 10%, transparent);
