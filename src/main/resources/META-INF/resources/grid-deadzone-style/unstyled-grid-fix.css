@@ -34,6 +34,15 @@ vaadin-grid[theme~="row-stripes"]::part(even-row-cell selected-row-cell) {
         color-mix(in srgb, currentColor 8%, transparent)
     ) !important;
 }
+/* Fix: on odd selected cells the vaadin-internal 4% baseline stacks with the
+   8% selection gradient, making cells darker than the dead zone. Override with
+   a single 8% layer so cells and dead zone match. */
+vaadin-grid[theme~="row-stripes"]::part(odd-row-cell selected-row-cell) {
+    background-image: linear-gradient(
+        color-mix(in srgb, currentColor 8%, transparent),
+        color-mix(in srgb, currentColor 8%, transparent)
+    ) !important;
+}
 vaadin-grid[theme~="row-stripes"]::part(even-row) {
     background-image: linear-gradient(
         color-mix(in srgb, currentColor 5%, transparent),
