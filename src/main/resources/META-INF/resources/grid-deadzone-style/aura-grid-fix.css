@@ -1,0 +1,25 @@
+vaadin-grid.rows::part(row) {
+    border-bottom: 1px solid var(--lumo-contrast-10pct);
+}
+
+/* Fix: mark the right boundary of the last column (= left edge of dead zone).
+   Needs !important: Aura's shadow-internal cell styles win the cascade otherwise. */
+vaadin-grid.rows::part(last-column-cell) {
+    border-right: 1px solid var(--lumo-contrast-10pct) !important;
+}
+
+/* Fix: extend row-stripes background into empty space after last column (Aura: odd rows) */
+vaadin-grid.rows::part(odd-row) {
+    background-image: linear-gradient(
+        var(--vaadin-grid-row-odd-background-color, color-mix(in srgb, var(--vaadin-text-color) 4%, transparent)),
+        var(--vaadin-grid-row-odd-background-color, color-mix(in srgb, var(--vaadin-text-color) 4%, transparent))
+    );
+}
+
+/* Fix: extend selection background into empty space after last column */
+vaadin-grid.rows::part(selected-row) {
+    background-image: linear-gradient(
+        var(--vaadin-grid-row-selected-background-color, color-mix(in srgb, currentColor 8%, transparent)),
+        var(--vaadin-grid-row-selected-background-color, color-mix(in srgb, currentColor 8%, transparent))
+    );
+}
