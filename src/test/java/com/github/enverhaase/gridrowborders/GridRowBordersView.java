@@ -131,7 +131,6 @@ public class GridRowBordersView extends VerticalLayout {
         grid.addColumn(Person::email).setHeader("Email").setResizable(true);
         grid.setItems(SAMPLE_DATA);
         grid.setAllRowsVisible(true);
-        grid.addClassName("rows");
 
         if (rowStripes) grid.addThemeVariants(GridVariant.ROW_STRIPES);
         if (colBorders) grid.addThemeVariants(GridVariant.COLUMN_BORDERS);
