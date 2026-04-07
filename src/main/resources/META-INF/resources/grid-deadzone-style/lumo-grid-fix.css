@@ -1,4 +1,19 @@
-/* Fix: extend horizontal row borders into the dead zone after the last column */
+/* Fix: extend header/body separator and row borders into the dead zone.
+   Lumo draws row borders via --_row-border-width on body cells (column area only).
+   We zero that variable so no internal cell border draws, then re-add the border on
+   the row element itself so it spans full width including the dead zone.
+   The header separator is drawn on header-cell.last-header-row-cell; we zero that
+   with !important and place it on the header-row element instead.
+   Both replacements produce a single 1 px line at the same y-position as before. */
+vaadin-grid {
+    --_row-border-width: 0;
+}
+vaadin-grid:not([theme~="no-row-borders"])::part(header-cell last-header-row-cell) {
+    border-bottom: none !important;
+}
+vaadin-grid:not([theme~="no-row-borders"])::part(header-row) {
+    border-bottom: 1px solid var(--lumo-contrast-10pct);
+}
 vaadin-grid:not([theme~="no-row-borders"])::part(body-row) {
     border-bottom: 1px solid var(--lumo-contrast-10pct);
 }
@@ -6,6 +21,9 @@ vaadin-grid:not([theme~="no-row-borders"])::part(body-row) {
 /* Fix: mark the right boundary of the last column when column-borders are active.
    Needs !important: Lumo's shadow-internal cell styles win the cascade otherwise. */
 vaadin-grid[theme~="column-borders"]::part(body-cell last-column-cell) {
+    border-right: 1px solid var(--lumo-contrast-10pct) !important;
+}
+vaadin-grid[theme~="column-borders"]::part(header-cell last-column-cell) {
     border-right: 1px solid var(--lumo-contrast-10pct) !important;
 }
 

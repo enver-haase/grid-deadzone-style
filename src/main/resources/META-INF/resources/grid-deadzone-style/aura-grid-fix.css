@@ -1,12 +1,22 @@
+/* Fix: extend header/body separator into the dead zone.
+   Aura draws the separator via a ::before pseudo-element on .last-header-row,
+   active only in overflow state. We add it to the header-row element itself
+   so it spans full width regardless of scroll state. */
+vaadin-grid:not([theme~="no-row-borders"])::part(header-row) {
+    border-bottom: 1px solid var(--vaadin-border-color);
+}
 /* Fix: extend horizontal row borders into the dead zone after the last column */
 vaadin-grid:not([theme~="no-row-borders"])::part(body-row) {
-    border-bottom: 1px solid var(--lumo-contrast-10pct);
+    border-bottom: 1px solid var(--vaadin-border-color);
 }
 
 /* Fix: mark the right boundary of the last column when column-borders are active.
    Needs !important: Aura's shadow-internal cell styles win the cascade otherwise. */
 vaadin-grid[theme~="column-borders"]::part(body-cell last-column-cell) {
-    border-right: 1px solid var(--lumo-contrast-10pct) !important;
+    border-right: 1px solid var(--vaadin-border-color) !important;
+}
+vaadin-grid[theme~="column-borders"]::part(header-cell last-column-cell) {
+    border-right: 1px solid var(--vaadin-border-color) !important;
 }
 
 /* Fix: extend row-stripes background into the dead zone (Aura stripes odd rows) */
@@ -31,4 +41,13 @@ vaadin-grid[theme~="row-stripes"]::part(selected-row) {
         var(--vaadin-grid-row-selected-background-color, color-mix(in srgb, currentColor 8%, transparent)),
         var(--vaadin-grid-row-selected-background-color, color-mix(in srgb, currentColor 8%, transparent))
     );
+}
+/* Fix: Aura shadow CSS stacks odd-row tint (~4%) on top of selection tint (~8%) on cells,
+   making odd selected cells appear darker than the dead zone (which only gets the
+   selection layer). Override cells to use selection colour only, matching the dead zone. */
+vaadin-grid[theme~="row-stripes"]::part(odd-row-cell selected-row-cell) {
+    background-image: linear-gradient(
+        var(--vaadin-grid-row-selected-background-color, color-mix(in srgb, currentColor 8%, transparent)),
+        var(--vaadin-grid-row-selected-background-color, color-mix(in srgb, currentColor 8%, transparent))
+    ) !important;
 }
