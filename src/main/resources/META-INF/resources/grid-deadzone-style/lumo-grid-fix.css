@@ -3,9 +3,9 @@ vaadin-grid:not([theme~="no-row-borders"])::part(body-row) {
     border-bottom: 1px solid var(--lumo-contrast-10pct);
 }
 
-/* Fix: mark the right boundary of the last column (= left edge of the dead zone).
+/* Fix: mark the right boundary of the last column when column-borders are active.
    Needs !important: Lumo's shadow-internal cell styles win the cascade otherwise. */
-vaadin-grid:not([theme~="no-row-borders"])::part(body-cell last-column-cell) {
+vaadin-grid[theme~="column-borders"]::part(body-cell last-column-cell) {
     border-right: 1px solid var(--lumo-contrast-10pct) !important;
 }
 
@@ -16,5 +16,10 @@ vaadin-grid[theme~="row-stripes"]::part(even-row) {
 
 /* Fix: extend selection highlight into the dead zone */
 vaadin-grid::part(selected-row) {
+    background-image: linear-gradient(var(--lumo-primary-color-10pct), var(--lumo-primary-color-10pct));
+}
+/* Re-assert selection for grids with row-stripes: the even-row rule above has higher
+   specificity (attribute selector) and would otherwise win on even selected rows. */
+vaadin-grid[theme~="row-stripes"]::part(selected-row) {
     background-image: linear-gradient(var(--lumo-primary-color-10pct), var(--lumo-primary-color-10pct));
 }

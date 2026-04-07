@@ -3,14 +3,38 @@ vaadin-grid::part(body-row) {
     border-bottom: 1px solid color-mix(in srgb, currentColor 10%, transparent);
 }
 
-/* Fix: mark the right boundary of the last column (= left edge of the dead zone).
+/* Fix: mark the right boundary of the last column when column-borders are active.
    Needs !important: vaadin-grid's shadow-internal cell styles win the cascade otherwise. */
-vaadin-grid::part(body-cell last-column-cell) {
+vaadin-grid[theme~="column-borders"]::part(body-cell last-column-cell) {
     border-right: 1px solid color-mix(in srgb, currentColor 10%, transparent) !important;
+}
+
+/* Fix: add row-stripes to cells AND extend into the dead zone.
+   Without a theme there is no built-in stripe CSS, so we provide it here.
+   Needs !important on cells: the web component's base shadow styles win otherwise. */
+vaadin-grid[theme~="row-stripes"]::part(even-row-cell) {
+    background-image: linear-gradient(
+        color-mix(in srgb, currentColor 5%, transparent),
+        color-mix(in srgb, currentColor 5%, transparent)
+    ) !important;
+}
+vaadin-grid[theme~="row-stripes"]::part(even-row) {
+    background-image: linear-gradient(
+        color-mix(in srgb, currentColor 5%, transparent),
+        color-mix(in srgb, currentColor 5%, transparent)
+    );
 }
 
 /* Fix: extend selection highlight into the dead zone */
 vaadin-grid::part(selected-row) {
+    background-image: linear-gradient(
+        color-mix(in srgb, currentColor 8%, transparent),
+        color-mix(in srgb, currentColor 8%, transparent)
+    );
+}
+/* Re-assert selection for grids with row-stripes: the even-row rule above has higher
+   specificity (attribute selector) and would otherwise win on even selected rows. */
+vaadin-grid[theme~="row-stripes"]::part(selected-row) {
     background-image: linear-gradient(
         color-mix(in srgb, currentColor 8%, transparent),
         color-mix(in srgb, currentColor 8%, transparent)
