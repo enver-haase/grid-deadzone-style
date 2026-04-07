@@ -1,13 +1,13 @@
-/* Fix: draw a header/body separator — Lumo/Aura provide this via theme CSS,
-   but with no theme loaded it is absent. Use slightly stronger contrast (20%)
-   than body row borders (10%) so the header stands out visually. */
+/* Fix: draw a header/body separator and extend row borders into the dead zone.
+   Lumo/Aura provide these via theme CSS; with no theme loaded they are absent.
+   We use the grid's own --_border-color and --_row-border-width variables so
+   the dead-zone lines are pixel-perfect matches of the in-column cell borders. */
 vaadin-grid::part(header-row) {
-    border-bottom: 1px solid color-mix(in srgb, currentColor 20%, transparent);
+    border-bottom: var(--_row-border-width) solid var(--_border-color);
 }
 
-/* Fix: extend horizontal row borders into the dead zone after the last column */
 vaadin-grid::part(body-row) {
-    border-bottom: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+    border-bottom: var(--_row-border-width) solid var(--_border-color);
 }
 
 /* Fix: mark the right boundary of the last column when column-borders are active.
