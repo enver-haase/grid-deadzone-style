@@ -1,0 +1,145 @@
+/* grid-fix.css — Extend vaadin-grid row borders and backgrounds into the dead
+   zone (the area right of the last column) for Lumo and Aura themes.
+   Load this file once; it does not need to be swapped when switching between
+   Lumo and Aura, or between light and dark colour schemes.
+
+   Theme identification uses CSS custom-property presence — no markup attributes:
+
+     Lumo-only    : --lumo-contrast-5pct / --lumo-contrast-10pct /
+                    --lumo-primary-color-10pct  (all empty in Aura)
+     Aura-only    : --vaadin-grid-row-selected-background-color  (empty in Lumo)
+     Aura+unstyled: --_border-color  (EMPTY in Lumo)
+
+   The Aura odd-row stripe exploits CSS invalidity:
+     color-mix(in srgb, var(--_border-color) 50%, transparent)
+     → Aura: --_border-color is 8% dark; 50% mix = 4% tint  (Aura's internal shade)
+     → Lumo: --_border-color is empty → var() substitution fails →
+             color-mix() is invalid → background-image declaration is invalid →
+             browser discards → transparent.  No stripe in Lumo. */
+
+
+/* ── Double-line prevention ──────────────────────────────────────────────────
+   Lumo and Aura draw 1 px borders on body cells via --_row-border-width.
+   These cell borders sit 1 px above the row element's bottom edge, so our
+   ::part(body-row) border-bottom would produce a second line just below.
+   Zeroing the variable removes the cell border; our row rule is then the sole
+   separator and lands at the same y-position in both the column area and the
+   dead zone. */
+vaadin-grid {
+    --_row-border-width: 0;
+}
+
+
+/* ── Header / body separator ─────────────────────────────────────────────────
+   Lumo draws the separator via border-bottom on header-cell.last-header-row-cell
+   (column area only). We zero that cell border (!important beats Lumo's shadow
+   rule) and re-place it on the header-row element so it spans the full width.
+   In Aura the cell carries no such border — the zero is a safe no-op. */
+vaadin-grid:not([theme~="no-row-borders"])::part(header-cell last-header-row-cell) {
+    border-bottom: none !important;
+}
+vaadin-grid:not([theme~="no-row-borders"])::part(header-row) {
+    border-bottom: 1px solid var(--_border-color,
+        var(--lumo-contrast-10pct,
+            color-mix(in srgb, currentColor 10%, transparent)));
+}
+
+
+/* ── Body row separator ──────────────────────────────────────────────────────
+   Border color fallback:
+     Aura     → --_border-color (8% dark, matches Aura's internal cell borders)
+     Lumo     → --lumo-contrast-10pct (10% contrast)
+     Unstyled → --_border-color (set by grid defaults) */
+vaadin-grid:not([theme~="no-row-borders"])::part(body-row) {
+    border-bottom: 1px solid var(--_border-color,
+        var(--lumo-contrast-10pct,
+            color-mix(in srgb, currentColor 10%, transparent)));
+}
+
+
+/* ── Column borders ──────────────────────────────────────────────────────────
+   --_column-border-width activates shadow-internal column border rules.
+   Lumo and Aura set this in their theme CSS for grids with the column-borders
+   variant; for unstyled grids it is 0 by default so we set it here.
+   The last-column-cell right border uses a Lumo-first fallback so Lumo gets
+   its 10% contrast and Aura gets its 20% vaadin-border-color. */
+vaadin-grid[theme~="column-borders"] {
+    --_column-border-width: 1px;
+}
+vaadin-grid[theme~="column-borders"]::part(body-cell last-column-cell) {
+    border-right: 1px solid
+        var(--lumo-contrast-10pct,
+            var(--vaadin-border-color,
+                color-mix(in srgb, currentColor 10%, transparent))) !important;
+}
+vaadin-grid[theme~="column-borders"]::part(header-cell last-column-cell) {
+    border-right: 1px solid
+        var(--lumo-contrast-10pct,
+            var(--vaadin-border-color,
+                color-mix(in srgb, currentColor 10%, transparent))) !important;
+}
+
+
+/* ── Row stripes — even rows (Lumo) ─────────────────────────────────────────
+   --lumo-contrast-5pct is defined only under Lumo; it is empty under Aura,
+   making the fallback transparent — a no-op in Aura. */
+vaadin-grid[theme~="row-stripes"]::part(even-row) {
+    background-image: linear-gradient(
+        var(--lumo-contrast-5pct, transparent),
+        var(--lumo-contrast-5pct, transparent)
+    );
+}
+
+/* ── Row stripes — odd rows (Aura) ──────────────────────────────────────────
+   See file header for the color-mix invalidity trick used here. */
+vaadin-grid[theme~="row-stripes"]::part(odd-row) {
+    background-image: linear-gradient(
+        color-mix(in srgb, var(--_border-color) 50%, transparent),
+        color-mix(in srgb, var(--_border-color) 50%, transparent)
+    );
+}
+
+
+/* ── Selection highlight (dead zone) ─────────────────────────────────────────
+   Fallback chain: Aura token → Lumo token → generic. */
+vaadin-grid::part(selected-row) {
+    background-image: linear-gradient(
+        var(--vaadin-grid-row-selected-background-color,
+            var(--lumo-primary-color-10pct,
+                color-mix(in srgb, currentColor 8%, transparent))),
+        var(--vaadin-grid-row-selected-background-color,
+            var(--lumo-primary-color-10pct,
+                color-mix(in srgb, currentColor 8%, transparent)))
+    );
+}
+/* Re-assert: the even-row and odd-row rules above have one attribute selector
+   (row-stripes), beating the zero-attribute selected-row rule above for
+   even/odd selected rows. This rule has the same specificity but appears later
+   in source, so it wins. */
+vaadin-grid[theme~="row-stripes"]::part(selected-row) {
+    background-image: linear-gradient(
+        var(--vaadin-grid-row-selected-background-color,
+            var(--lumo-primary-color-10pct,
+                color-mix(in srgb, currentColor 8%, transparent))),
+        var(--vaadin-grid-row-selected-background-color,
+            var(--lumo-primary-color-10pct,
+                color-mix(in srgb, currentColor 8%, transparent)))
+    );
+}
+
+/* Fix: Aura shadow CSS stacks the odd-row tint (~4%) on top of the selection
+   tint (~10%) on cells, making odd selected cells appear darker than the dead
+   zone (which only receives the selection layer). Override cells to show the
+   selection colour only, matching the dead zone.
+   In Lumo this rule resolves to --lumo-primary-color-10pct — the same value
+   Lumo already draws on odd selected cells — so there is no visible change. */
+vaadin-grid[theme~="row-stripes"]::part(odd-row-cell selected-row-cell) {
+    background-image: linear-gradient(
+        var(--vaadin-grid-row-selected-background-color,
+            var(--lumo-primary-color-10pct,
+                color-mix(in srgb, currentColor 8%, transparent))),
+        var(--vaadin-grid-row-selected-background-color,
+            var(--lumo-primary-color-10pct,
+                color-mix(in srgb, currentColor 8%, transparent)))
+    ) !important;
+}
