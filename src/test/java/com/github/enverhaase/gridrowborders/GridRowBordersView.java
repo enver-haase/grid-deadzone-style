@@ -16,6 +16,7 @@ import com.vaadin.flow.shared.Registration;
 import com.vaadin.flow.theme.lumo.Lumo;
 
 import java.util.List;
+import java.util.Set;
 
 @Route("")
 public class GridRowBordersView extends VerticalLayout {
@@ -47,7 +48,9 @@ public class GridRowBordersView extends VerticalLayout {
     @Override
     protected void onAttach(AttachEvent attachEvent) {
         super.onAttach(attachEvent);
-        attachEvent.getUI().getPage().setColorScheme(ColorScheme.Value.LIGHT);
+        UI ui = attachEvent.getUI();
+        ui.getPage().setColorScheme(ColorScheme.Value.LIGHT);
+        applyTheme(ui, null, "grid-deadzone-style/unstyled-grid-fix.css");
     }
 
     private HorizontalLayout buildControls() {
@@ -126,11 +129,17 @@ public class GridRowBordersView extends VerticalLayout {
 
     private static Grid<Person> makeGrid(boolean rowStripes, boolean colBorders) {
         Grid<Person> grid = new Grid<>(Person.class, false);
-        grid.addColumn(Person::first).setHeader("First");
-        grid.addColumn(Person::last).setHeader("Last");
-        grid.addColumn(Person::email).setHeader("Email").setResizable(true);
+        grid.addColumn(Person::first).setHeader("First").setWidth("50px").setFlexGrow(0);
+        grid.addColumn(Person::last).setHeader("Last").setWidth("50px").setFlexGrow(0);
+        grid.addColumn(Person::email).setHeader("Email").setResizable(true)
+                .setWidth("50px").setFlexGrow(0);
         grid.setItems(SAMPLE_DATA);
         grid.setAllRowsVisible(true);
+        grid.setSelectionMode(Grid.SelectionMode.MULTI);
+        grid.asMultiSelect().select(Set.of(
+                SAMPLE_DATA.get(2),  // Carol
+                SAMPLE_DATA.get(3)   // Dave
+        ));
 
         if (rowStripes) grid.addThemeVariants(GridVariant.ROW_STRIPES);
         if (colBorders) grid.addThemeVariants(GridVariant.COLUMN_BORDERS);

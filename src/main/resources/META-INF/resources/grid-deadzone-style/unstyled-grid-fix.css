@@ -1,18 +1,37 @@
 /* Fix: draw a header/body separator and extend row borders into the dead zone.
    Lumo/Aura provide these via theme CSS; with no theme loaded they are absent.
-   We use the grid's own --_border-color and --_row-border-width variables so
-   the dead-zone lines are pixel-perfect matches of the in-column cell borders. */
+   We zero --_row-border-width to suppress vaadin's internal cell border-top.
+   Without zeroing, three consecutive 1 px borders appear at each row junction
+   in the column area (row border-bottom + next row border-top + cell border-top)
+   while the dead zone only sees two — a 3 px vs 2 px mismatch.
+   With cell borders zeroed, both column area and dead zone see exactly two 1 px
+   borders per junction (row border-bottom + next row border-top = 2 px),
+   replicating the natural "1 px bottom + 1 px top" pattern at row level. */
+vaadin-grid {
+    --_row-border-width: 0;
+}
+
 vaadin-grid::part(header-row) {
-    border-bottom: var(--_row-border-width) solid var(--_border-color);
+    border-bottom: 1px solid var(--_border-color);
 }
 
 vaadin-grid::part(body-row) {
-    border-bottom: var(--_row-border-width) solid var(--_border-color);
+    border-top: 1px solid var(--_border-color);
+    border-bottom: 1px solid var(--_border-color);
 }
 
-/* Fix: mark the right boundary of the last column when column-borders are active.
-   Needs !important: vaadin-grid's shadow-internal cell styles win the cascade otherwise. */
+/* Fix: draw column borders between cells and mark the right boundary of the last column.
+   --_column-border-width: 0 by default with no theme; setting it to 1px activates the
+   shadow-internal column border rules for both header and body cells.
+   The last-column-cell right border needs !important: shadow border-inline-end-style
+   defaults to none (the shorthand omits style) and shadow rules win otherwise. */
+vaadin-grid[theme~="column-borders"] {
+    --_column-border-width: 1px;
+}
 vaadin-grid[theme~="column-borders"]::part(body-cell last-column-cell) {
+    border-right: 1px solid color-mix(in srgb, currentColor 10%, transparent) !important;
+}
+vaadin-grid[theme~="column-borders"]::part(header-cell last-column-cell) {
     border-right: 1px solid color-mix(in srgb, currentColor 10%, transparent) !important;
 }
 
@@ -47,6 +66,15 @@ vaadin-grid[theme~="row-stripes"]::part(even-row) {
     background-image: linear-gradient(
         color-mix(in srgb, currentColor 5%, transparent),
         color-mix(in srgb, currentColor 5%, transparent)
+    );
+}
+/* Fix: extend vaadin's internal 4% odd-row baseline into the dead zone.
+   Vaadin's shadow CSS applies 4% tint to odd-row cells under row-stripes;
+   the dead zone sees none without this rule. */
+vaadin-grid[theme~="row-stripes"]::part(odd-row) {
+    background-image: linear-gradient(
+        color-mix(in srgb, currentColor 4%, transparent),
+        color-mix(in srgb, currentColor 4%, transparent)
     );
 }
 
