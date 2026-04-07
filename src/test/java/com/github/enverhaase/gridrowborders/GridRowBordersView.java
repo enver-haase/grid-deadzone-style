@@ -32,6 +32,7 @@ public class GridRowBordersView extends VerticalLayout {
     );
 
     private Registration themeRegistration;
+    private Registration fixRegistration;
 
     public GridRowBordersView() {
         setPadding(true);
@@ -61,12 +62,17 @@ public class GridRowBordersView extends VerticalLayout {
         });
         themeSelect.setValue("unstyled");
         themeSelect.addValueChangeListener(e -> {
-            String url = switch (e.getValue()) {
+            String themeUrl = switch (e.getValue()) {
                 case "aura" -> "aura/aura.css";
                 case "lumo" -> Lumo.STYLESHEET;
                 default     -> null;
             };
-            applyTheme(e.getSource().getUI().orElse(UI.getCurrent()), url);
+            String fixUrl = switch (e.getValue()) {
+                case "aura" -> "grid-deadzone-style/aura-grid-fix.css";
+                case "lumo" -> "grid-deadzone-style/lumo-grid-fix.css";
+                default     -> "grid-deadzone-style/unstyled-grid-fix.css";
+            };
+            applyTheme(e.getSource().getUI().orElse(UI.getCurrent()), themeUrl, fixUrl);
         });
 
         Select<String> modeSelect = new Select<>();
@@ -85,11 +91,15 @@ public class GridRowBordersView extends VerticalLayout {
         return controls;
     }
 
-    private void applyTheme(UI ui, String url) {
+    private void applyTheme(UI ui, String themeUrl, String fixUrl) {
         if (themeRegistration != null) {
             themeRegistration.remove();
         }
-        themeRegistration = url != null ? ui.getPage().addStyleSheet(url) : null;
+        if (fixRegistration != null) {
+            fixRegistration.remove();
+        }
+        themeRegistration = themeUrl != null ? ui.getPage().addStyleSheet(themeUrl) : null;
+        fixRegistration   = fixUrl   != null ? ui.getPage().addStyleSheet(fixUrl)   : null;
     }
 
     private Div buildGridPanel() {
@@ -121,6 +131,7 @@ public class GridRowBordersView extends VerticalLayout {
         grid.addColumn(Person::email).setHeader("Email").setResizable(true);
         grid.setItems(SAMPLE_DATA);
         grid.setAllRowsVisible(true);
+        grid.addClassName("rows");
 
         if (rowStripes) grid.addThemeVariants(GridVariant.ROW_STRIPES);
         if (colBorders) grid.addThemeVariants(GridVariant.COLUMN_BORDERS);

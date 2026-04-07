@@ -1,0 +1,19 @@
+vaadin-grid.rows::part(row) {
+    border-bottom: 1px solid var(--lumo-contrast-10pct);
+}
+
+/* Fix: mark the right boundary of the last column (= left edge of dead zone).
+   Needs !important: Lumo's shadow-internal cell styles win the cascade otherwise. */
+vaadin-grid.rows::part(last-column-cell) {
+    border-right: 1px solid var(--lumo-contrast-10pct) !important;
+}
+
+/* Fix: extend row-stripes background into empty space after last column (Lumo: even rows) */
+vaadin-grid.rows::part(even-row) {
+    background-image: linear-gradient(var(--lumo-contrast-5pct), var(--lumo-contrast-5pct));
+}
+
+/* Fix: extend selection background into empty space after last column */
+vaadin-grid.rows::part(selected-row) {
+    background-image: linear-gradient(var(--lumo-primary-color-10pct), var(--lumo-primary-color-10pct));
+}
