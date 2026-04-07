@@ -33,7 +33,6 @@ public class GridRowBordersView extends VerticalLayout {
     );
 
     private Registration themeRegistration;
-    private Registration fixRegistration;
 
     public GridRowBordersView() {
         setPadding(true);
@@ -50,32 +49,18 @@ public class GridRowBordersView extends VerticalLayout {
         super.onAttach(attachEvent);
         UI ui = attachEvent.getUI();
         ui.getPage().setColorScheme(ColorScheme.Value.LIGHT);
-        applyTheme(ui, null, "grid-deadzone-style/unstyled-grid-fix.css");
+        themeRegistration = ui.getPage().addStyleSheet(Lumo.STYLESHEET);
     }
 
     private HorizontalLayout buildControls() {
         Select<String> themeSelect = new Select<>();
         themeSelect.setLabel("Theme");
-        themeSelect.setItems("lumo", "aura", "unstyled");
-        themeSelect.setItemLabelGenerator(t -> switch (t) {
-            case "lumo"     -> "Lumo";
-            case "aura"     -> "Aura";
-            case "unstyled" -> "None";
-            default         -> t;
-        });
-        themeSelect.setValue("unstyled");
+        themeSelect.setItems("lumo", "aura");
+        themeSelect.setItemLabelGenerator(t -> "aura".equals(t) ? "Aura" : "Lumo");
+        themeSelect.setValue("lumo");
         themeSelect.addValueChangeListener(e -> {
-            String themeUrl = switch (e.getValue()) {
-                case "aura" -> "aura/aura.css";
-                case "lumo" -> Lumo.STYLESHEET;
-                default     -> null;
-            };
-            String fixUrl = switch (e.getValue()) {
-                case "aura" -> "grid-deadzone-style/aura-grid-fix.css";
-                case "lumo" -> "grid-deadzone-style/lumo-grid-fix.css";
-                default     -> "grid-deadzone-style/unstyled-grid-fix.css";
-            };
-            applyTheme(e.getSource().getUI().orElse(UI.getCurrent()), themeUrl, fixUrl);
+            String themeUrl = "aura".equals(e.getValue()) ? "aura/aura.css" : Lumo.STYLESHEET;
+            applyTheme(e.getSource().getUI().orElse(UI.getCurrent()), themeUrl);
         });
 
         Select<String> modeSelect = new Select<>();
@@ -94,15 +79,11 @@ public class GridRowBordersView extends VerticalLayout {
         return controls;
     }
 
-    private void applyTheme(UI ui, String themeUrl, String fixUrl) {
+    private void applyTheme(UI ui, String themeUrl) {
         if (themeRegistration != null) {
             themeRegistration.remove();
         }
-        if (fixRegistration != null) {
-            fixRegistration.remove();
-        }
-        themeRegistration = themeUrl != null ? ui.getPage().addStyleSheet(themeUrl) : null;
-        fixRegistration   = fixUrl   != null ? ui.getPage().addStyleSheet(fixUrl)   : null;
+        themeRegistration = ui.getPage().addStyleSheet(themeUrl);
     }
 
     private Div buildGridPanel() {
