@@ -1,15 +1,16 @@
-vaadin-grid.rows::part(row) {
+/* Fix: extend horizontal row borders into the dead zone after the last column */
+vaadin-grid::part(body-row) {
     border-bottom: 1px solid color-mix(in srgb, currentColor 10%, transparent);
 }
 
-/* Fix: mark the right boundary of the last column (= left edge of dead zone).
+/* Fix: mark the right boundary of the last column (= left edge of the dead zone).
    Needs !important: vaadin-grid's shadow-internal cell styles win the cascade otherwise. */
-vaadin-grid.rows::part(last-column-cell) {
+vaadin-grid::part(body-cell last-column-cell) {
     border-right: 1px solid color-mix(in srgb, currentColor 10%, transparent) !important;
 }
 
-/* Fix: extend selection background into empty space after last column */
-vaadin-grid.rows::part(selected-row) {
+/* Fix: extend selection highlight into the dead zone */
+vaadin-grid::part(selected-row) {
     background-image: linear-gradient(
         color-mix(in srgb, currentColor 8%, transparent),
         color-mix(in srgb, currentColor 8%, transparent)
