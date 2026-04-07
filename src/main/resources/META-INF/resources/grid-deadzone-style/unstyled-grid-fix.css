@@ -25,6 +25,15 @@ vaadin-grid[theme~="row-stripes"]::part(even-row-cell) {
         color-mix(in srgb, currentColor 5%, transparent)
     ) !important;
 }
+/* Re-assert selection over stripe on even selected cells: the even-row-cell rule
+   above (with !important) wins over the selection background-image on cells.
+   A compound part selector with the same !important restores the correct colour. */
+vaadin-grid[theme~="row-stripes"]::part(even-row-cell selected-row-cell) {
+    background-image: linear-gradient(
+        color-mix(in srgb, currentColor 8%, transparent),
+        color-mix(in srgb, currentColor 8%, transparent)
+    ) !important;
+}
 vaadin-grid[theme~="row-stripes"]::part(even-row) {
     background-image: linear-gradient(
         color-mix(in srgb, currentColor 5%, transparent),
