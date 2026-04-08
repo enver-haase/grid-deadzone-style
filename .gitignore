@@ -2,3 +2,4 @@ target/
 node_modules/
 src/main/frontend/generated/
 *.class
+frontend/index.html
