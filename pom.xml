@@ -7,7 +7,7 @@
 
     <groupId>org.vaadin.addons</groupId>
     <artifactId>grid-deadzone-style</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <packaging>jar</packaging>
 
     <name>Dead-Zone Style for Grid</name>
