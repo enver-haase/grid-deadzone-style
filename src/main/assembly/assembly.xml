@@ -11,7 +11,7 @@
     <fileSets>
         <fileSet>
             <directory>${project.basedir}/src/main/assembly</directory>
-            <outputDirectory>/</outputDirectory>
+            <outputDirectory>META-INF</outputDirectory>
             <includes>
                 <include>MANIFEST.MF</include>
             </includes>

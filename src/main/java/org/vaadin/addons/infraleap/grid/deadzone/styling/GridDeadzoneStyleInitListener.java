@@ -1,4 +1,4 @@
-package org.vaadin.addons.grid.style.repair;
+package org.vaadin.addons.infraleap.grid.deadzone.styling;
 
 import com.vaadin.flow.server.ServiceInitEvent;
 import com.vaadin.flow.server.VaadinServiceInitListener;

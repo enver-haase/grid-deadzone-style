@@ -1,4 +1,4 @@
-package com.github.enverhaase.gridrowborders;
+package org.vaadin.addons.infraleap.grid.deadzone.styling;
 
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.UI;

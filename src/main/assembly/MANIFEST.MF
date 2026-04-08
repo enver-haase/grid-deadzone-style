@@ -2,4 +2,5 @@ Manifest-Version: 1.0
 Vaadin-Package-Version: 1
 Implementation-Title: ${project.name}
 Implementation-Version: ${project.version}
+Implementation-Vendor: Enver Haase
 Implementation-Vendor-Id: ${project.groupId}

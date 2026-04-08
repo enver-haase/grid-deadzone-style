@@ -5,12 +5,12 @@
              http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.vaadin.addons</groupId>
+    <groupId>org.vaadin.addons.infraleap</groupId>
     <artifactId>grid-deadzone-style</artifactId>
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <name>Dead-Zone Style for Grid</name>
+    <name>Grid Deadzone Style</name>
     <description>Vaadin add-on that repairs the visual dead-zone in Vaadin Grid.</description>
 
     <properties>
@@ -122,7 +122,7 @@
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot.version}</version>
                 <configuration>
-                    <mainClass>com.github.enverhaase.gridrowborders.Application</mainClass>
+                    <mainClass>org.vaadin.addons.infraleap.grid.deadzone.styling.Application</mainClass>
                 </configuration>
             </plugin>
         </plugins>
