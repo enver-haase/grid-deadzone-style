@@ -17,6 +17,13 @@
             </includes>
             <filtered>true</filtered>
         </fileSet>
+        <fileSet>
+            <directory>${project.basedir}</directory>
+            <outputDirectory>META-INF</outputDirectory>
+            <includes>
+                <include>LICENSE</include>
+            </includes>
+        </fileSet>
     </fileSets>
     <dependencySets>
         <dependencySet>
