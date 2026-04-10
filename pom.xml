@@ -7,12 +7,14 @@
 
     <groupId>org.vaadin.addons.infraleap</groupId>
     <artifactId>grid-deadzone-style</artifactId>
-    <version>1.0</version>
+    <version>1.0.0</version>
     <packaging>jar</packaging>
 
     <name>Grid Deadzone Style</name>
     <description>Vaadin add-on that repairs the visual dead-zone in Vaadin Grid.</description>
-
+    <organization>
+        <name>Enver Haase</name>
+    </organization>
     <properties>
         <maven.compiler.source>21</maven.compiler.source>
         <maven.compiler.target>21</maven.compiler.target>
