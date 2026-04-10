@@ -3,3 +3,6 @@ node_modules/
 src/main/frontend/generated/
 *.class
 frontend/index.html
+.idea
+src/main/frontend/index.html
+.DS_Store
